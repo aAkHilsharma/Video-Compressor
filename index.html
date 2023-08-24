@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Compressor</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="text-center">Compress Video</h1>
+      <h3 class="text-center">Upload videos and download compressed videos. To start upload the file through input below.</h2>
+      <div class="form-group">
+        <input
+          type="file"
+          id="files"
+          name=""
+          class="form-control"
+          accept="video/*"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <button id="button" class="btn btn-danger btn-block">
+          Upload Video
+        </button>
+      </div>
+      <div
+        class="form-group"
+        id="downloadButtonContainer"
+        style="display: none"
+      >
+        <button id="downloadButton" class="btn btn-danger btn-block">
+          Download Videos
+        </button>
+      </div>
+      <div id="reducedSize"></div>
+      <div id="downloadLinks"></div>
+    </div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+    const button = document.getElementById("button");
+
+    const downloadButtonContainer = document.getElementById(
+      "downloadButtonContainer"
+    );
+
+    const reducedSizeContainer = document.getElementById("reducedSize"); 
+
+    downloadButtonContainer.style.display = "none";
+
+    button.addEventListener("click", async () => {
+      const input = document.getElementById("files");
+      const file = input.files[0];
+
+      const formData = new FormData();
+      formData.append("video", file);
+
+      button.disabled = true;
+      button.innerHTML = "Uploading...";
+
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          downloadButtonContainer.style.display = "block";
+          let reducedSize = `<p>Reduced by ${data.reduced}</p>`;
+          reducedSizeContainer.innerHTML = reducedSize;
+        }
+      } catch (error) {
+        console.error("Error uploading video:", error);
+      } finally {
+        button.disabled = false;
+        button.innerHTML = "Upload Video";
+      }
+    });
+
+    const downloadButton = document.getElementById("downloadButton");
+
+    downloadButton.addEventListener("click", async () => {
+      downloadButton.disabled = true;
+      downloadButton.innerHTML = "Fetching Download Links...";
+
+      try {
+        const input = document.getElementById("files");
+        const file = input.files[0];
+        console.log(file);
+        const response = await fetch(`/download/${file.name}`, {
+          method: "GET",
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          const message = data.message;
+          let downloadLinks = `<p>${message}</p>`;
+
+          if (data.original) {
+            downloadLinks += `<a href="${data.original}" download>Download Original Video</a><br>`;
+          }
+
+          if (data.compressed) {
+            downloadLinks += `<a href="${data.compressed}" download>Download Compressed Video</a>`;
+          }
+
+          document.getElementById("downloadLinks").innerHTML = downloadLinks;
+        } else {
+          console.error("Error fetching download links:", data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching download links:", error);
+      } finally {
+        downloadButton.disabled = false;
+        downloadButton.innerHTML = "Download Videos";
+      }
+    });
+  </script>
+</html>
