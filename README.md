@@ -28,15 +28,21 @@ This repository contains Node.js APIs for uploading and downloading videos using
 4. Start the server:
    node index.js
 
-Usage
-   Uploading and Compressing Videos
-   Visit the hosted application URL: http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/
-   Select a video file using the provided form.
-   Click the "Upload Video" button to initiate the upload and compression process.
-   Once uploaded, a "Download Videos" button will appear.
-   Click the "Download Videos" button to get download links for the original and/or compressed videos.
-Swagger Documentation
-   Access the Swagger UI documentation by visiting: http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/api-docs
-API Endpoints
-   Upload API: /upload
-   Download API: /download/{filename}
+## Usage
+
+### Uploading and Compressing Videos
+
+1. Visit the hosted application URL: [http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/](http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/)
+2. Select a video file using the provided form.
+3. Click the "Upload Video" button to initiate the upload and compression process.
+4. Once uploaded, a "Download Videos" button will appear.
+5. Click the "Download Videos" button to get download links for the original and/or compressed videos.
+
+### Swagger Documentation
+
+Access the Swagger UI documentation by visiting: [http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/api-docs](http://ec2-13-236-137-136.ap-southeast-2.compute.amazonaws.com:3000/api-docs)
+
+## API Endpoints
+
+- Upload API: `/upload`
+- Download API: `/download/{filename}`
